@@ -1,14 +1,8 @@
 /*!
  *
- * \mainpage AOSSL
+ * \mainpage C++11 Client for Neo4j
  *
  * ![](https://travis-ci.org/AO-StreetArt/NeoCpp.svg?branch=master)
- *
- * \section over Overview
- *
- * Welcome to NeoCpp, a C++11 client for Neo4j.
- *
- * NeoCpp
  *
  * \section gettingstarted Getting Started
  *
