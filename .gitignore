@@ -2,6 +2,7 @@
 *.cc
 *_test
 *.a
+*.o
 docs/_build/
 docs/_static/
 docs/_templates/
