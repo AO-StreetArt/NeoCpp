@@ -2,7 +2,7 @@
  *
  * \mainpage AOSSL
  *
- * ![](https://travis-ci.org/AO-StreetArt/AOSharedServiceLibrary.svg?branch=master)
+ * ![](https://travis-ci.org/AO-StreetArt/NeoCpp.svg?branch=master)
  *
  * \section over Overview
  *

@@ -1,13 +1,15 @@
-# Neocpp
+![](https://travis-ci.org/AO-StreetArt/NeoCpp.svg?branch=master)
+
+# Neo4j in C++
 
 C++11 Client Driver for Neo4j (https://neo4j.com/)
 
-# Features:
+## Features:
 * High-speed connection to Neo4j, Secured or Unsecured, through Bolt Protocol
 * Connection-pooling for multi-threaded applications
 * Built with STL Containers and data structures
 * Minimal Dependencies, all available through apt-get
 * Support for Ubuntu 14.04, Ubuntu 16.04, Debian 7, Debian 8, CentOS 7, RHEL 7
 
-# Dependencies
+## Dependencies
 * libneo4j-client (https://github.com/cleishm/libneo4j-client)

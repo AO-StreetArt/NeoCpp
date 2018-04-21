@@ -13,10 +13,13 @@ services:
 before_install:
 - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
 - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-5 /usr/bin/g++
+install:
 - docker pull neo4j
 - docker run -d --publish=7474:7474 --publish=7687:7687 --env=NEO4J_AUTH=none
   --volume=$HOME/neo4j/data:/data neo4j
-before_script:
+- cd $TRAVIS_BUILD_DIR/scripts/linux/deb/ && ./build_deps.sh
+- cd $TRAVIS_BUILD_DIR
+script:
 - gcc --version
 - ldd --version
 - make tests
