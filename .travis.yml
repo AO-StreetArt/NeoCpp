@@ -23,6 +23,6 @@ script:
 - gcc --version
 - ldd --version
 - make tests
-- cd $TRAVIS_BUILD_DIR/neocpp/test && ./neo4j_test
+- cd $TRAVIS_BUILD_DIR/test && ./neo4j_test
 - cd $TRAVIS_BUILD_DIR && sudo make install
 - cd $TRAVIS_BUILD_DIR && sudo make uninstall
