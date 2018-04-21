@@ -121,6 +121,6 @@
  *     delete neo;
  *
  * ## Use
- * Please continue on to the \ref use_index "Use" section of the documentation to see example uses of the library.
+ * Please continue on to the \ref compilation "Compilation" section of the documentation to see how to compile your program.
  * \ref index "Go Home"
  */
