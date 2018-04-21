@@ -13,3 +13,6 @@ C++11 Client Driver for Neo4j (https://neo4j.com/)
 
 ## Dependencies
 * libneo4j-client (https://github.com/cleishm/libneo4j-client)
+
+## Documentation
+Documentation for NeoCpp can be found at http://neocpp.readthedocs.io/en/latest/index.html
