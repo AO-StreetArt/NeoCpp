@@ -16,9 +16,9 @@ if [ "$#" -ne 1 ]; then
     printf "Attempting to install core library"
 
     # Install the library
-    cd ../ && sudo make -f install
+    cd ../ && sudo cp -r usr/local/include/neocpp /usr/local/include/
 
-    printf "Finished installing AOSSL"
+    printf "Finished installing NeoCpp"
   fi
 
 else
@@ -26,7 +26,7 @@ else
   if [ $OPT = "-r" ]
   then
     printf "Attempting to uninstall core library"
-    sudo make uninstall
-    printf "Finished uninstalling AOSSL"
+    sudo rm -r /usr/local/include/neocpp/
+    printf "Finished uninstalling NeoCpp"
   fi
 fi

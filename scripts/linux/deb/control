@@ -1,0 +1,9 @@
+Package: neocpp
+Version: 1.0-1
+Section: base
+Priority: optional
+Architecture: all
+Depends: libssl-dev, openssl, libneo4j-client-dev (>= 2.2.0), neo4j-client (>= 2.2.0)
+Maintainer: AO Labs <aostreetart9@gmail.com>
+Description: NeoCpp
+ C++11 Client for Neo4j
