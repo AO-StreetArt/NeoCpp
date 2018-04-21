@@ -1,0 +1,21 @@
+/*!
+ *
+ * \mainpage AOSSL
+ *
+ * ![](https://travis-ci.org/AO-StreetArt/AOSharedServiceLibrary.svg?branch=master)
+ *
+ * \section over Overview
+ *
+ * Welcome to NeoCpp, a C++11 client for Neo4j.
+ *
+ * NeoCpp
+ *
+ * \section gettingstarted Getting Started
+ *
+ * - \ref quickstart "Quickstart"
+ * - \ref use_index "Use"
+ * - \ref compilation "Compilation"
+ *
+ * \section contributing Contributing
+ * - \ref dev_notes "Developer Notes"
+ */

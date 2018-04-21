@@ -1,0 +1,7 @@
+PROJECT_NAME     = NeoCpp
+PROJECT_LOGO     = icons/logo.png
+OUTPUT_DIRECTORY = docs/html
+WARNINGS         = YES
+INPUT            = neocpp/connection/interface neocpp/connection/impl neocpp/data/interface neocpp/utils docs/pages/
+FILE_PATTERNS    = *_factory.h *_interface.h *_exception.h *.txt
+SEARCHENGINE     = YES

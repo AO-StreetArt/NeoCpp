@@ -1,0 +1,60 @@
+/*! \page quickstart AOSSL Quick Start Guide
+ *
+ * ### Setup
+ *
+ * Before we begin, we need to build our dependencies and then build the project.
+ *
+ * #### Dependencies
+ *
+ * ##### Ubuntu16.04/Debian 7
+ * The build_deps.sh script should allow for automatic resolution of dependencies.  Run the following command from the main folder
+ *
+ *     cd scripts/linux/deb/ && sudo ./build_deps.sh
+ *
+ * ##### CentOS 7/Redhat Enterprise Linux 7
+ * The build_deps.sh script should allow for automatic resolution of dependencies.
+ *
+ * Before using the script, you will need to ensure that you have gcc version 5 or greater installed (By default, CentOS comes with gcc 4.8):
+ *
+ *     gcc --version
+ *
+ * If you do not see version 5 or above, you can likely use the devtoolset to get the latest one:
+ *
+ *     sudo yum install centos-release-scl
+ *     sudo yum install devtoolset-7-gcc*
+ *     scl enable devtoolset-7 bash
+ *     which gcc
+ *     gcc --version
+ *
+ * Then, run the following commands from within the main folder to resolve the other dependencies
+ *
+ *     cd scripts/linux/rhel/ && sudo ./build_deps.sh
+ *
+ * ##### Other
+ * Please see instructions at https://github.com/cleishm/libneo4j-client.
+ *
+ * #### Install and Uninstall the Project
+ *
+ * The project can be installed on linux systems with:
+ *
+ *     sudo make install
+ *
+ * We can uninstall the libraries with:
+ *
+ *     sudo make uninstall
+ *
+ * #### Build the Tests
+ *
+ * Run the following to build the library test executable.
+ *
+ *     make tests
+ *
+ * The executable can be found under the test folder, it accepts a single command line argument which is the
+ * address of the Neo4j instance to connect to.  By default, it will connect to the default Neo4j port on localhost.
+ *
+ * ## Use
+ * Please continue on to the \ref use_index "Use" section of the documentation to see example uses of the library.
+ *
+ * \ref index "Go Home"
+ *
+ */

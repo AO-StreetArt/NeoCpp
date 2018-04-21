@@ -1,0 +1,23 @@
+/*! \page compilation Compiling programs using Neocpp
+ *
+ * # Compiling your Application
+ *
+ * NeoCpp is a header-only library, so you simply need to ensure that the headers
+ * can be found on your include path.
+ *
+ * ## Linking
+ * NeoCpp has requirements which need to find specific shared libraries.
+ *
+ * ### Libneo4j
+ * NeoCpp depends on the Neo4j client, which needs to link against several dependencies:
+ *
+ *     -lneo4j-client -lssl -lcrypto -lm
+ *
+ * ## Standard
+ *
+ * NeoCpp is coded to the c++11 standard.
+ *
+ *     -std=c++11
+ *
+ * \ref index "Go Home"
+ */

@@ -1,0 +1,126 @@
+/*! \page use_index How to Use NeoCpp
+ *
+ * Neo4j is a graph based database which stores data in Nodes & Edges.
+ * To access it, we start by retrieving our factory & interface.
+ *
+ *     #include "neocpp/connection/interface/neo4j_interface.h"
+ *     #include "neocpp/connection/impl/libneo4j_factory.h"
+ *
+ *     Neocpp::LibNeo4jFactory neo4j_factory;
+ *     Neocpp::Neo4jInterface *neo =  = neo4j_factory.get_neo4j_interface("neo4j://localhost:7687");
+ *
+ * Now, we can execute Cypher queries with the command below:
+ *
+ *     std::string query = "CREATE (you:Person {name:'E', list: [1, 2, 3]})-[like:LIKE]->(me:Person {name:'F', list: [4, 5, 6]}) RETURN you, like, me";
+ *     Neocpp::ResultsIteratorInterface *results = neo->execute(query);
+ *
+ * Our results iterator lets us view the results of the query:
+ *
+ *     Neocpp::ResultTreeInterface *result = results->next();
+ *     Neocpp::DbObjectInterface *obj = result->get(0);
+ *     std::cout << obj->to_string() << std::endl;
+ *
+ * The result tree represents a single set of results.  This can include many nodes and/or edges, and depends entirely on the RETURN clause of the cypher query.  We can retrieve values by index from this tree into the DbObject, which is either a node, edge, or path.
+ *
+ * We can access properties of nodes & edges:
+ *
+ *     Neocpp::DbMapInterface *map = obj->properties();
+ *     if (map->element_exists("name")) {
+ *       std::cout << map->get_string_element("name") << std::endl;
+ *     }
+ *     if (map->element_exists("list")) {
+ *       Neocpp::DbListInterface *list_prop = map->get_list_element("list");
+ *       std::cout << "List Size: " << list_prop->size() << std::endl;
+ *       std::cout << list_prop->get_int_element(0) << std::endl;
+ *       delete list_prop;
+ *     }
+ *
+ * As well as labels of nodes and directions of edges:
+ *
+ *     Neocpp::DbListInterface *list = obj->labels();
+ *     std::cout << list->get_string_element(0) << std::endl;
+ *     Neocpp::DbObjectInterface *edge = result->get(1);
+ *     if (edge->forward()) {
+ *       std::cout << "Forward edge" << std::endl;
+ *     }
+ *
+ * Remember to delete all of the objects that you've used when viewing the results!
+ * The results of the query allocate memory lazily, and it is the callers responsibility
+ * to clean up after the memory used when viewing the results.
+ *
+ *     delete results;
+ *     delete result;
+ *     delete obj;
+ *     delete map;
+ *     delete list;
+ *     delete edge;
+ *
+ * ## Query Parameters
+ *
+ * We can pass parameters to queries by creating named maps with any number of parameters:
+ *
+ *     std::unordered_map<std::string, Neocpp::Neo4jQueryParameterInterface*> query_params;
+ *     Neocpp::Neo4jQueryParameterInterface *name_param = neo4j_factory.get_neo4j_query_parameter("E");
+ *     query_params.emplace("inp_name", name_param);
+ *
+ * Then, we can use the name we define as a variable, surrounded by "{}" within the query, and we pass the map to the execute function.
+ *
+ *     std::string query = "MATCH (you:Person) WHERE you.name = {inp_name} RETURN you"
+ *     Neocpp::ResultsIteratorInterface *results = neo->execute(query, query_params);
+ *
+ * We can then access the results as above through the iterator.
+ *
+ * We can also supply a list of query parameters of the same type.
+ *
+ *     std::unordered_map<std::string, Neocpp::Neo4jQueryParameterInterface*> query_params;
+ *     Neocpp::Neo4jQueryParameterInterface *list_param = neo4j_factory.get_neo4j_query_parameter();
+ *     list_param->add_value(1);
+ *     list_param->add_value(2);
+ *     query_params.emplace("inp_list", list_param);
+ *
+ * We run the query in the same way as above, but the parameter will be inserted wrapped in '[]'.  For example, this:
+ *
+ *     std::string query = "MATCH (you:Person) WHERE you.list = {inp_list} RETURN you"
+ *     Neocpp::ResultsIteratorInterface *results = neo->execute(query, query_params);
+ *
+ * Make sure you clean up after yourself!
+ *
+ *     delete name_param;
+ *     delete list_param;
+ *     delete results;
+ *
+ * Will execute the query: 'MATCH (you:Person) WHERE you.list = [1,2] RETURN you'.
+ *
+ * ## Paths
+ *
+ * Certain queries return path objects instead of nodes and edges:
+ *
+ *     std::string query = "MATCH (base:Person {name:'E'}), (next:Person {name:'F'}), p = shortestPath((base)-[r*]-(next)) RETURN p"
+ *     Neocpp::ResultsIteratorInterface *results = neo->execute(query);
+ *
+ * Then, we can access the results:
+ *
+ *     Neocpp::ResultTreeInterface *result = results->next();
+ *     Neocpp::DbObjectInterface *path_obj = result->get(0);
+ *     if (path_obj->is_path()) {
+ *       if (path_obj->size() > 0) {
+ *         Neocpp::DbObjectInterface *path_elt = path_obj->get_path_element(0);
+ *         std::cout << path_elt->to_string() << std::endl;
+ *         delete path_elt;
+ *       }
+ *     }
+ *     delete path_obj;
+ *     delete result;
+ *     delete results;
+ *
+ * ## Cleanup
+ *
+ * Be sure to cleanup all of your query results, as well as the Neo4jInterface prior
+ * to shutdown:
+ *
+ *     delete neo;
+ *
+ * ## Use
+ * Please continue on to the \ref use_index "Use" section of the documentation to see example uses of the library.
+ * \ref index "Go Home"
+ */

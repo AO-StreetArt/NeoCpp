@@ -1,0 +1,8 @@
+*.log.*
+*.cc
+*_test
+*.a
+docs/_build/
+docs/_static/
+docs/_templates/
+docs/html/
