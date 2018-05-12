@@ -23,7 +23,10 @@ yum repolist
 
 #Determine if we need the neo4j-client library
 printf "Building libneo4j"
-cd /etc/yum.repos.d/ && sudo wget https://download.opensuse.org/repositories/home:cleishm/CentOS_7/home:cleishm.repo
-sudo yum -y install libneo4j-client libneo4j-client-devel
+wget https://github.com/cleishm/libneo4j-client/releases/download/v2.2.0/libneo4j-client-2.2.0.tar.gz
+tar -xvzf libneo4j-client-2.2.0.tar.gz
+cd libneo4j-client-2.2.0 && ./configure --disable-tools && make clean check && make install
+#cd /etc/yum.repos.d/ && sudo wget https://download.opensuse.org/repositories/home:cleishm/CentOS_7/home:cleishm.repo
+#sudo yum -y install libneo4j-client libneo4j-client-devel
 
 printf "Finished installing dependencies"
