@@ -10,15 +10,17 @@ mkdir $PRE
 
 printf "Calling yum update"
 
-#Update the Server
-yum -y update
+sudo yum -y install openssl-devel boost-devel centos-release-scl epel-release
+sudo yum -y update
+sudo yum -y install devtoolset-7
+scl enable devtoolset-7 bash
 
 #Build the dependencies and place them in the correct places
 
 printf "Addressing pre-build requirements"
 
 #Ensure that specific build requirements are satisfied
-yum -y install build-essential libtool pkg-config autoconf automake cmake make git wget gcc gcc-c++ epel-release openssl openssl-devel
+yum -y install build-essential libtool pkg-config wget git openssl openssl-devel
 yum repolist
 
 #Determine if we need the neo4j-client library
