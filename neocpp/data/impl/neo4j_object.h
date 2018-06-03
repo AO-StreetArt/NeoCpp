@@ -38,7 +38,7 @@ class DbObject: public DbObjectInterface {
   bool is_forward = true;
   neo4j_value_t val;
   std::string str_val = "";
-  char buf[128] = "";
+  char buf[128] = {'\0'};
 
   // Get the neo4j value for this object
   neo4j_value_t get_value() {

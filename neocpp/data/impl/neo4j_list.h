@@ -33,8 +33,8 @@ class DbList: public DbListInterface {
   ValueGenerationFunction list_function;
   KeyGenerationFunction map_function = NULL;
   std::string map_key;
-  char db_cstr[512] = "";
-  char buf[512] = "";
+  char db_cstr[512] = {'\0'};
+  char buf[512] = {'\0'};
   std::string elt = "";
   std::string str_val = "";
 

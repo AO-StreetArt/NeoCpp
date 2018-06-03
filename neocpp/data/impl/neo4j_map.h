@@ -37,8 +37,8 @@ class DbMap: public DbMapInterface {
   ValueGenerationFunction map_function;
   std::vector<KeyGenerationFunction> map_functions;
   std::vector<std::string> keys;
-  char db_cstr[512] = "";
-  char buf[128] = "";
+  char db_cstr[512] = {'\0'};
+  char buf[128] = {'\0'};
   std::string elt = "";
   std::string str_val = "";
   neo4j_value_t db_obj;
