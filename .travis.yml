@@ -8,6 +8,7 @@ addons:
     packages:
     - gcc-5
     - g++-5
+    - make
 services:
 - docker
 before_install:
