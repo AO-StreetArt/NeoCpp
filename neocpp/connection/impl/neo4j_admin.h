@@ -27,6 +27,7 @@ limitations under the License.
 #include <mutex>
 
 #include "neocpp/connection/interface/neo4j_interface.h"
+#include "neocpp/connection/interface/neo4j_tls_config.h"
 #include "neocpp/connection/impl/neo4j_connection_pool.h"
 #include "neocpp/data/interface/result_iterator_interface.h"
 #include "neocpp/data/impl/neo4j_result_iterator.h"
@@ -41,45 +42,64 @@ namespace Neocpp {
 class Neo4jAdmin: public Neo4jInterface {
   Neo4jConnectionPool *pool = NULL;
   inline void initialize(const char * conn_str, bool secure, int conn_pool_size, \
-    int pool_start_size, int pool_batch_size) {
-      pool = new Neo4jConnectionPool(conn_pool_size, conn_str, secure, \
-        pool_start_size, pool_batch_size);
+    int pool_start_size, int pool_batch_size, Neo4jTlsConfig *tls_config) {
+      pool = new Neo4jConnectionPool(conn_pool_size, conn_str, \
+        pool_start_size, pool_batch_size, tls_config);
   }
 
  public:
   // Initializers
-  inline Neo4jAdmin(const char * conn_str, bool secure, int pool_size, \
-    int pstart_size, int pbatch_size) {
-    initialize(conn_str, secure, pool_size, pstart_size, pbatch_size);
+  inline Neo4jAdmin(const char * conn_str, int pool_size, \
+      int pstart_size, int pbatch_size) {
+    initialize(conn_str, false, pool_size, pstart_size, pbatch_size, NULL);
   }
 
-  inline Neo4jAdmin(std::string conn_str, bool secure, int pool_size, \
-    int pstart_size, int pbatch_size) {
-    initialize(conn_str.c_str(), secure, pool_size, pstart_size, pbatch_size);
+  inline Neo4jAdmin(std::string conn_str, int pool_size, \
+      int pstart_size, int pbatch_size) {
+    initialize(conn_str.c_str(), false, pool_size, pstart_size, pbatch_size, NULL);
   }
 
-  inline Neo4jAdmin(const char * conn_str, bool secure, int pool_size) {
-    initialize(conn_str, secure, pool_size, 0, 1);
+  inline Neo4jAdmin(const char * conn_str, int pool_size) {
+    initialize(conn_str, false, pool_size, 0, 1, NULL);
   }
 
-  inline Neo4jAdmin(std::string conn_str, bool secure, int pool_size) {
-    initialize(conn_str.c_str(), secure, pool_size, 0, 1);
-  }
-
-  inline Neo4jAdmin(const char * conn_str, bool secure) {
-    initialize(conn_str, secure, 5, 0, 1);
-  }
-
-  inline Neo4jAdmin(std::string conn_str, bool secure) {
-    initialize(conn_str.c_str(), secure, 5, 0, 1);
+  inline Neo4jAdmin(std::string conn_str, int pool_size) {
+    initialize(conn_str.c_str(), false, pool_size, 0, 1, NULL);
   }
 
   inline Neo4jAdmin(const char * conn_str) {
-    initialize(conn_str, false, 5, 0, 1);
+    initialize(conn_str, false, 5, 0, 1, NULL);
   }
 
   inline Neo4jAdmin(std::string conn_str) {
-    initialize(conn_str.c_str(), false, 5, 0, 1);
+    initialize(conn_str.c_str(), false, 5, 0, 1, NULL);
+  }
+
+  // Secure initializers
+  inline Neo4jAdmin(const char * conn_str, int pool_size, \
+      int pstart_size, int pbatch_size, Neo4jTlsConfig *tls_config) {
+    initialize(conn_str, false, pool_size, pstart_size, pbatch_size, tls_config);
+  }
+
+  inline Neo4jAdmin(std::string conn_str, int pool_size, \
+      int pstart_size, int pbatch_size, Neo4jTlsConfig *tls_config) {
+    initialize(conn_str.c_str(), false, pool_size, pstart_size, pbatch_size, tls_config);
+  }
+
+  inline Neo4jAdmin(const char * conn_str, int pool_size, Neo4jTlsConfig *tls_config) {
+    initialize(conn_str, false, pool_size, 0, 1, tls_config);
+  }
+
+  inline Neo4jAdmin(std::string conn_str, int pool_size, Neo4jTlsConfig *tls_config) {
+    initialize(conn_str.c_str(), false, pool_size, 0, 1, tls_config);
+  }
+
+  inline Neo4jAdmin(const char * conn_str, Neo4jTlsConfig *tls_config) {
+    initialize(conn_str, false, 5, 0, 1, tls_config);
+  }
+
+  inline Neo4jAdmin(std::string conn_str, Neo4jTlsConfig *tls_config) {
+    initialize(conn_str.c_str(), false, 5, 0, 1, tls_config);
   }
 
   // Destructor

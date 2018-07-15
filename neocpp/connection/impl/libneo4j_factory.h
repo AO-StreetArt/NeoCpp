@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <string>
 #include "neocpp/connection/interface/neo4j_interface.h"
+#include "neocpp/connection/interface/neo4j_tls_config.h"
 #include "neocpp/connection/impl/neo4j_admin.h"
 #include "neocpp/data/interface/query_parameter_interface.h"
 #include "neocpp/data/impl/neo4j_query_parameter.h"
@@ -52,38 +53,62 @@ class LibNeo4jFactory {
 
   //! Get a Neo4j Interface instance
   inline Neo4jInterface* get_neo4j_interface(const char * conn_str, \
-    bool secure) {
-    return new Neo4jAdmin(conn_str, secure);
+    int pool_size) {
+    return new Neo4jAdmin(conn_str, pool_size);
   }
 
   //! Get a Neo4j Interface instance
   inline Neo4jInterface* get_neo4j_interface(std::string conn_str, \
-    bool secure) {
-    return new Neo4jAdmin(conn_str, secure);
+    int pool_size) {
+    return new Neo4jAdmin(conn_str, pool_size);
   }
 
   //! Get a Neo4j Interface instance
   inline Neo4jInterface* get_neo4j_interface(const char * conn_str, \
-    bool secure, int pool_size) {
-    return new Neo4jAdmin(conn_str, secure, pool_size);
+    int pool_size, int pstart_size, int pbatch) {
+    return new Neo4jAdmin(conn_str, pool_size, pstart_size, pbatch);
   }
 
   //! Get a Neo4j Interface instance
   inline Neo4jInterface* get_neo4j_interface(std::string conn_str, \
-    bool secure, int pool_size) {
-    return new Neo4jAdmin(conn_str, secure, pool_size);
+    int pool_size, int pstart_size, int pbatch) {
+    return new Neo4jAdmin(conn_str, pool_size, pstart_size, pbatch);
+  }
+
+  //! Get a Neo4j Interface instance
+  inline Neo4jInterface* get_neo4j_interface(const char * conn_string, \
+      Neo4jTlsConfig *tls_config) {
+    return new Neo4jAdmin(conn_string, tls_config);
+  }
+
+  //! Get a Neo4j Interface instance
+  inline Neo4jInterface* get_neo4j_interface(std::string conn_string, \
+      Neo4jTlsConfig *tls_config) {
+    return new Neo4jAdmin(conn_string, tls_config);
   }
 
   //! Get a Neo4j Interface instance
   inline Neo4jInterface* get_neo4j_interface(const char * conn_str, \
-    bool secure, int pool_size, int pstart_size, int pbatch) {
-    return new Neo4jAdmin(conn_str, secure, pool_size, pstart_size, pbatch);
+    int pool_size, Neo4jTlsConfig *tls_config) {
+    return new Neo4jAdmin(conn_str, pool_size, tls_config);
   }
 
   //! Get a Neo4j Interface instance
   inline Neo4jInterface* get_neo4j_interface(std::string conn_str, \
-    bool secure, int pool_size, int pstart_size, int pbatch) {
-    return new Neo4jAdmin(conn_str, secure, pool_size, pstart_size, pbatch);
+    int pool_size, Neo4jTlsConfig *tls_config) {
+    return new Neo4jAdmin(conn_str, pool_size, tls_config);
+  }
+
+  //! Get a Neo4j Interface instance
+  inline Neo4jInterface* get_neo4j_interface(const char * conn_str, \
+    int pool_size, int pstart_size, int pbatch, Neo4jTlsConfig *tls_config) {
+    return new Neo4jAdmin(conn_str, pool_size, pstart_size, pbatch, tls_config);
+  }
+
+  //! Get a Neo4j Interface instance
+  inline Neo4jInterface* get_neo4j_interface(std::string conn_str, \
+    int pool_size, int pstart_size, int pbatch, Neo4jTlsConfig *tls_config) {
+    return new Neo4jAdmin(conn_str, pool_size, pstart_size, pbatch, tls_config);
   }
 
   //! Get a Neo4j Array Query Parameter
@@ -118,6 +143,14 @@ class LibNeo4jFactory {
   inline Neo4jQueryParameterInterface* \
     get_neo4j_query_parameter(double inp_double) {
     return new Neo4jQueryParameter(inp_double);
+  }
+
+  //! Get a TLS Configuration Object
+
+  //! We can pass this back with configuration data to intialize a
+  //! secure socket
+  inline Neo4jTlsConfig* get_neo4j_tls_configuration() {
+    return new Neo4jTlsConfig();
   }
 };
 
