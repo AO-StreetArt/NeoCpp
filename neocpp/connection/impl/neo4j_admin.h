@@ -46,6 +46,11 @@ class Neo4jAdmin: public Neo4jInterface {
       pool = new Neo4jConnectionPool(conn_pool_size, conn_str, \
         pool_start_size, pool_batch_size, tls_config);
   }
+  inline void initialize(const char * conn_str, bool secure, int conn_pool_size, \
+    int pool_start_size, int pool_batch_size) {
+      pool = new Neo4jConnectionPool(conn_pool_size, conn_str, \
+        pool_start_size, pool_batch_size);
+  }
 
  public:
   // Initializers
@@ -56,23 +61,23 @@ class Neo4jAdmin: public Neo4jInterface {
 
   inline Neo4jAdmin(std::string conn_str, int pool_size, \
       int pstart_size, int pbatch_size) {
-    initialize(conn_str.c_str(), false, pool_size, pstart_size, pbatch_size, NULL);
+    initialize(conn_str.c_str(), false, pool_size, pstart_size, pbatch_size);
   }
 
   inline Neo4jAdmin(const char * conn_str, int pool_size) {
-    initialize(conn_str, false, pool_size, 0, 1, NULL);
+    initialize(conn_str, false, pool_size, 0, 1);
   }
 
   inline Neo4jAdmin(std::string conn_str, int pool_size) {
-    initialize(conn_str.c_str(), false, pool_size, 0, 1, NULL);
+    initialize(conn_str.c_str(), false, pool_size, 0, 1);
   }
 
   inline Neo4jAdmin(const char * conn_str) {
-    initialize(conn_str, false, 5, 0, 1, NULL);
+    initialize(conn_str, false, 5, 0, 1);
   }
 
   inline Neo4jAdmin(std::string conn_str) {
-    initialize(conn_str.c_str(), false, 5, 0, 1, NULL);
+    initialize(conn_str.c_str(), false, 5, 0, 1);
   }
 
   // Secure initializers

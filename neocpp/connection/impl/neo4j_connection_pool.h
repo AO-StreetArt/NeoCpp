@@ -59,7 +59,7 @@ class Neo4jConnectionPool {
   // Internal Mutex to ensure that new connections are created one at a time
   std::mutex create_conn_mutex;
   // TLS Configuration
-  Neo4jTlsConfig *tls_config;
+  Neo4jTlsConfig *tls_config = NULL;
 
   // Convert a TLS Configuration Object into a neo4j_config_t
   inline void convert_tls_config(Neo4jTlsConfig *inp_conf, neo4j_config_t *out_conf) {
