@@ -18,11 +18,14 @@ limitations under the License.
 
 // Connection Pooling
 
+#include <cerrno>
+#include <cstring>
 #include <neo4j-client.h>
 #include <mutex>
 #include <string>
 #include <vector>
 #include "neocpp/connection/impl/slot_pool.h"
+#include "neocpp/connection/interface/neo4j_tls_config.h"
 #include "neocpp/utils/neo4j_exception.h"
 
 #ifndef NEOCPP_CONNECTION_IMPL_NEO4J_CONNECTION_POOL_H_
@@ -33,6 +36,7 @@ namespace Neocpp {
 // A struct containing the objects needed to run a query
 struct Neo4jQuerySession {
   neo4j_connection_t *connection = NULL;
+  neo4j_config_t *config = NULL;
   int index = -1;
 };
 
@@ -54,6 +58,44 @@ class Neo4jConnectionPool {
   std::string connection_string;
   // Internal Mutex to ensure that new connections are created one at a time
   std::mutex create_conn_mutex;
+  // TLS Configuration
+  Neo4jTlsConfig *tls_config = NULL;
+
+  // Convert a TLS Configuration Object into a neo4j_config_t
+  inline void convert_tls_config(Neo4jTlsConfig *inp_conf, neo4j_config_t *out_conf) {
+    std::string ca_file = inp_conf->get_ca_file();
+    if (!(ca_file.empty())) {
+      int result = neo4j_config_set_TLS_ca_file(out_conf, ca_file.c_str());
+      if (result < 0) throw Neo4jException(std::strerror(errno));
+    }
+    std::string ca_dir = inp_conf->get_ca_dir();
+    if (!(ca_dir.empty())) {
+      int result = neo4j_config_set_TLS_ca_dir(out_conf, ca_dir.c_str());
+      if (result < 0) throw Neo4jException(std::strerror(errno));
+    }
+    std::string key_file = inp_conf->get_key();
+    if (!(key_file.empty())) {
+      int result = neo4j_config_set_TLS_private_key(out_conf, key_file.c_str());
+      if (result < 0) throw Neo4jException(std::strerror(errno));
+    }
+    std::string key_pswd = inp_conf->get_key_password();
+    if (!(key_pswd.empty())) {
+      int result = neo4j_config_set_TLS_private_key_password(out_conf, key_pswd.c_str());
+      if (result < 0) throw Neo4jException(std::strerror(errno));
+    }
+    std::string trusted_hosts_file = inp_conf->get_known_hosts_file();
+    if (!(trusted_hosts_file.empty())) {
+      int result = neo4j_config_set_known_hosts_file(out_conf, trusted_hosts_file.c_str());
+      if (result < 0) throw Neo4jException(std::strerror(errno));
+    }
+    if (inp_conf->is_trust_known_hosts_set()) {
+      int callback_result = neo4j_config_set_unverified_host_callback(out_conf, \
+          host_verification, NULL);
+      if (callback_result < 0) throw Neo4jException(std::strerror(errno));
+      int result = neo4j_config_set_trust_known_hosts(out_conf, inp_conf->get_trust_known_hosts());
+      if (result < 0) throw Neo4jException(std::strerror(errno));
+    }
+  }
 
   // Start our initial connections
   inline void init_connections(const char * conn_str, bool secure) {
@@ -64,7 +106,9 @@ class Neo4jConnectionPool {
       if (!secure) {
         qs.connection = neo4j_connect(conn_str, NULL, NEO4J_INSECURE);
       } else {
-        qs.connection = neo4j_connect(conn_str, NULL, NEO4J_CONNECT_DEFAULT);
+        qs.config = neo4j_new_config();
+        convert_tls_config(tls_config, qs.config);
+        qs.connection = neo4j_connect(conn_str, qs.config, NEO4J_CONNECT_DEFAULT);
       }
 
       // Check if the connection was successful
@@ -81,29 +125,44 @@ class Neo4jConnectionPool {
   }
 
   // Base Startup Routine
-  inline void init(int size, const char * conn_str, bool secure_connect) {
+  inline void init(int size, const char * conn_str, bool secure_connect, \
+      Neo4jTlsConfig *conf) {
     connection_limit = size;
     connection_string.assign(conn_str);
     secure = secure_connect;
     slot_pool = new SlotPool(connection_limit);
+    tls_config = conf;
     neo4j_client_init();
     init_connections(conn_str, secure);
   }
 
  public:
   // Constructors
-  Neo4jConnectionPool(int size, const char * conn_str, bool secure_connect) \
-    {init(size, conn_str, secure_connect);}
+  Neo4jConnectionPool(int size, const char * conn_str) \
+      {init(size, conn_str, false, NULL);}
   inline Neo4jConnectionPool(int size, const char * conn_str, \
-    bool secure_connect, int start_conns) {
+      int start_conns) {
     start_connections = start_conns;
-    init(size, conn_str, secure_connect);
+    init(size, conn_str, false, NULL);
   }
   inline Neo4jConnectionPool(int size, const char * conn_str, \
-    bool secure_connect, int start_conns, int batch_size) {
+      int start_conns, int batch_size) {
     connection_creation_batch = batch_size;
     start_connections = start_conns;
-    init(size, conn_str, secure_connect);
+    init(size, conn_str, false, NULL);
+  }
+  Neo4jConnectionPool(int size, const char * conn_str, Neo4jTlsConfig *conf) \
+      {init(size, conn_str, true, conf);}
+  inline Neo4jConnectionPool(int size, const char * conn_str, \
+      int start_conns, Neo4jTlsConfig *conf) {
+    start_connections = start_conns;
+    init(size, conn_str, true, conf);
+  }
+  inline Neo4jConnectionPool(int size, const char * conn_str, \
+      int start_conns, int batch_size, Neo4jTlsConfig *conf) {
+    connection_creation_batch = batch_size;
+    start_connections = start_conns;
+    init(size, conn_str, true, conf);
   }
 
   // Destructor
@@ -111,6 +170,7 @@ class Neo4jConnectionPool {
     for (unsigned int i = 0; i < connections.size(); i++) {
       // Release the connection
       neo4j_close(connections[i].connection);
+      neo4j_config_free(connections[i].config);
     }
     neo4j_client_cleanup();
     delete slot_pool;
@@ -140,8 +200,10 @@ class Neo4jConnectionPool {
             qs.connection = neo4j_connect(connection_string.c_str(), \
               NULL, NEO4J_INSECURE);
           } else {
+            qs.config = neo4j_new_config();
+            convert_tls_config(tls_config, qs.config);
             qs.connection = neo4j_connect(connection_string.c_str(), \
-              NULL, NEO4J_CONNECT_DEFAULT);
+              qs.config, NEO4J_CONNECT_DEFAULT);
           }
 
           // Check if the connection was successful
@@ -162,6 +224,7 @@ class Neo4jConnectionPool {
     // Pack the connection & session into the return object
     Neo4jQuerySession *s = new Neo4jQuerySession;
     s->connection = connections[current_connection].connection;
+    s->config = connections[current_connection].config;
     s->index = current_connection;
 
     // Return the latest connection information

@@ -7,7 +7,7 @@ LIBS = -lneo4j-client -lssl -lcrypto -lm
 RM = rm -f
 
 #Makefile Targets
-tests: neo4j_test
+tests: neo4j_test neo4j_secure_test
 
 clean:
 	$(RM) *.o *~ *_test
@@ -20,3 +20,9 @@ neo4j_test: neo4j_test.o
 # Create the object file zmqio_test.o
 neo4j_test.o: neo4j_test.cpp
 	$(CC) $(CFLAGS) -o $@ -c neo4j_test.cpp $(STD) $(INCL_DIRS)
+
+neo4j_secure_test: neo4j_secure_test.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS) $(STD) $(INCL_DIRS)
+
+neo4j_secure_test.o: neo4j_secure_test.cpp
+	$(CC) $(CFLAGS) -o $@ -c neo4j_secure_test.cpp $(STD) $(INCL_DIRS)
